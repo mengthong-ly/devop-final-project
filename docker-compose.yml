@@ -5,15 +5,14 @@ services:
   # USERS SERVICE
   # --------------------
   users-service:
-    build: ./users-service
-    container_name: users-service
+    image: mengthongly/users-service:latest
+    restart: always
     ports:
       - "8001:8000"
-    volumes:
-      - ./users-service:/var/www
     environment:
-      APP_ENV: local
-      APP_DEBUG: true
+      APP_ENV: production
+      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
+      APP_DEBUG: false
       DB_CONNECTION: pgsql
       DB_HOST: users-db
       DB_PORT: 5432
@@ -40,15 +39,14 @@ services:
   # TASKS SERVICE
   # --------------------
   tasks-service:
-    build: ./tasks-service
+    image: mengthongly/tasks-service:latest
     container_name: tasks-service
+    restart: always
     ports:
       - "8002:8000"
-    volumes:
-      - ./tasks-service:/var/www
     environment:
-      APP_ENV: local
-      APP_DEBUG: true
+      APP_ENV: production
+      APP_DEBUG: false
       DB_CONNECTION: pgsql
       DB_HOST: tasks-db
       DB_PORT: 5432
@@ -75,15 +73,14 @@ services:
   # ASSIGNMENTS SERVICE
   # --------------------
   assignments-service:
-    build: ./assignments-service
+    image: mengthongly/assignments-service:latest
     container_name: assignments-service
+    restart: always
     ports:
       - "8003:8000"
-    volumes:
-      - ./assignments-service:/var/www
     environment:
-      APP_ENV: local
-      APP_DEBUG: true
+      APP_ENV: production
+      APP_DEBUG: false
       DB_CONNECTION: pgsql
       DB_HOST: assignments-db
       DB_PORT: 5432
@@ -106,9 +103,6 @@ services:
     volumes:
       - assignments_data:/var/lib/postgresql/data
 
-# --------------------
-# VOLUMES (for DB persistence)
-# --------------------
 volumes:
   users_data:
   tasks_data:
