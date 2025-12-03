@@ -1,0 +1,115 @@
+version: "3.9"
+
+services:
+  # --------------------
+  # USERS SERVICE
+  # --------------------
+  users-service:
+    build: ./users-service
+    container_name: users-service
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./users-service:/var/www
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      DB_CONNECTION: pgsql
+      DB_HOST: users-db
+      DB_PORT: 5432
+      DB_DATABASE: users_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - users-db
+
+  users-db:
+    image: postgres:15
+    container_name: users-db
+    restart: always
+    environment:
+      POSTGRES_DB: users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - users_data:/var/lib/postgresql/data
+
+  # --------------------
+  # TASKS SERVICE
+  # --------------------
+  tasks-service:
+    build: ./tasks-service
+    container_name: tasks-service
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./tasks-service:/var/www
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      DB_CONNECTION: pgsql
+      DB_HOST: tasks-db
+      DB_PORT: 5432
+      DB_DATABASE: tasks_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - tasks-db
+
+  tasks-db:
+    image: postgres:15
+    container_name: tasks-db
+    restart: always
+    environment:
+      POSTGRES_DB: tasks_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - tasks_data:/var/lib/postgresql/data
+
+  # --------------------
+  # ASSIGNMENTS SERVICE
+  # --------------------
+  assignments-service:
+    build: ./assignments-service
+    container_name: assignments-service
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./assignments-service:/var/www
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      DB_CONNECTION: pgsql
+      DB_HOST: assignments-db
+      DB_PORT: 5432
+      DB_DATABASE: assignments_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - assignments-db
+
+  assignments-db:
+    image: postgres:15
+    container_name: assignments-db
+    restart: always
+    environment:
+      POSTGRES_DB: assignments_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - assignments_data:/var/lib/postgresql/data
+
+# --------------------
+# VOLUMES (for DB persistence)
+# --------------------
+volumes:
+  users_data:
+  tasks_data:
+  assignments_data:
