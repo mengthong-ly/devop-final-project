@@ -1,4 +1,4 @@
-name: Users Service CI/CD
+name: Assignments Service CI/CD
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -19,9 +18,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/assignments-service:latest assignments-service
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/assignments-service:latest assignments-service/
 
       - name: Push Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/assignments-service:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/assignments-service:latest
