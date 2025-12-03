@@ -66,6 +66,8 @@ class TaskController extends Controller
 
         $task->delete();
 
+        // Mengthong is the best
+
         return response()->json(['message' => 'Task deleted successfully']);
     }
 }
