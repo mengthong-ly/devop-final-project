@@ -39,7 +39,7 @@ class AssignmentController extends Controller
         if ($task->failed()) {
             return response()->json(['error' => 'Task not found'], 404);
         }
-        
+
         $assignment = Assignment::create([
             'user_id' => $request->user_id,
             'task_id' => $request->task_id,
@@ -88,7 +88,14 @@ class AssignmentController extends Controller
 
     public function destroy($id)
     {
-        Assignment::destroy($id);
-        return response()->json(null, 204);
+        $assignemnt = Assignment::find($id);
+
+        if (!$assignemnt) {
+            return response()->json(['message' => 'Assignemnt not found'], 404);
+        }
+
+        $assignemnt->delete();
+
+        return response()->json(['message' => 'Assignemnt deleted successfully']);
     }
 }

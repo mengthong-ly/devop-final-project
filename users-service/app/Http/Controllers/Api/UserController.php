@@ -9,9 +9,10 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function show(Request $request)
-    {
-        return response()->json($request->user());
+    public function show($id)
+    {   
+        $user =  User::find($id);
+        return $user;
     }
 
     public function index()

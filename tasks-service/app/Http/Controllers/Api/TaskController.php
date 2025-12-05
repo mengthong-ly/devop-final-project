@@ -10,7 +10,8 @@ class TaskController extends Controller
 {
     public function index()
     {
-        return response()->json(Task::all());
+        $tasks = Task::all();
+        return response()->json($tasks);
     }
     public function store(Request $request)
     {
@@ -65,8 +66,6 @@ class TaskController extends Controller
         }
 
         $task->delete();
-
-        // Mengthong is the best
 
         return response()->json(['message' => 'Task deleted successfully']);
     }
