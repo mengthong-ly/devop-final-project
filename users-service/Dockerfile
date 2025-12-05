@@ -33,6 +33,10 @@ WORKDIR /var/www
 COPY . .
 COPY --from=assets /var/www/public/build ./public/build
 
-RUN curl -sS https://getcomposer.org/installer | php && php composer.phar install --no-dev --optimize-autoloader
+COPY . .
+RUN rm -f .env
+RUN rm -f bootstrap/cache/config.php bootstrap/cache/packages.php
+RUN curl -sS https://getcomposer.org/installer | php && php composer.phar install --no-dev
+
 
 CMD php artisan serve --host=0.0.0.0 --port=8000
