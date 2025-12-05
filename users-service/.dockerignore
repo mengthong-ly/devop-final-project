@@ -1,5 +1,12 @@
+# Prevent leaking env & cached config
 .env
 .env.*
 bootstrap/cache/*
+storage/logs/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/*
+
+# Node & vendor folders kept out of build context
 node_modules
 vendor
