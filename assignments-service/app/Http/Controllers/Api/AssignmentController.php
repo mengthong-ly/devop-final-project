@@ -48,26 +48,6 @@ class AssignmentController extends Controller
         return response()->json($assignment, 201);
     }
 
-    // public function assign(Request $request)
-    // {
-    //     // Validate User exists
-    //     $user = Http::get("http://users-service:8001/api/users/" . $request->user_id);
-    //     if ($user->failed()) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
-
-    //     // Validate Task exists
-    //     $task = Http::get("http://tasks-service:8002/api/tasks/" . $request->task_id);
-    //     if ($task->failed()) {
-    //         return response()->json(['error' => 'Task not found'], 404);
-    //     }
-
-    //     return Assignment::create([
-    //         'user_id' => $request->user_id,
-    //         'task_id' => $request->task_id,
-    //     ]);
-    // }
-
     public function show($id)
     {
         return response()->json(Assignment::findOrFail($id));
