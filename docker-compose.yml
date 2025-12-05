@@ -1,15 +1,14 @@
 version: "3.9"
 
 services:
-  # ===============================
-  # USERS SERVICE (PHP-FPM)
-  # ===============================
+  # --------------------
+  # USERS SERVICE
+  # --------------------
   users-service:
-    build: ./users-service
-    container_name: users-php
+    image: mengthongly/users-service:latest
     restart: always
-    expose:
-      - "9000"
+    ports:
+      - "8001:8000"
     environment:
       APP_ENV: production
       APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
@@ -22,18 +21,6 @@ services:
       DB_PASSWORD: postgres
     depends_on:
       - users-db
-
-  users-nginx:
-    image: nginx:stable
-    container_name: users-nginx
-    restart: always
-    ports:
-      - "8001:80"
-    volumes:
-      - ./users-service:/var/www
-      - ./users-service/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - users-service
 
   users-db:
     image: postgres:15
@@ -48,19 +35,19 @@ services:
     volumes:
       - users_data:/var/lib/postgresql/data
 
-  # ===============================
-  # TASKS SERVICE (PHP-FPM)
-  # ===============================
+  # --------------------
+  # TASKS SERVICE
+  # --------------------
   tasks-service:
-    build: ./tasks-service
-    container_name: tasks-php
+    image: mengthongly/tasks-service:latest
+    container_name: tasks-service
     restart: always
-    expose:
-      - "9000"
+    ports:
+      - "8002:8000"
     environment:
       APP_ENV: production
-      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       APP_DEBUG: false
+      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       DB_CONNECTION: pgsql
       DB_HOST: tasks-db
       DB_PORT: 5432
@@ -69,18 +56,6 @@ services:
       DB_PASSWORD: postgres
     depends_on:
       - tasks-db
-
-  tasks-nginx:
-    image: nginx:stable
-    container_name: tasks-nginx
-    restart: always
-    ports:
-      - "8002:80"
-    volumes:
-      - ./tasks-service:/var/www
-      - ./tasks-service/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - tasks-service
 
   tasks-db:
     image: postgres:15
@@ -95,20 +70,20 @@ services:
     volumes:
       - tasks_data:/var/lib/postgresql/data
 
-  # ===============================
-  # ASSIGNMENTS SERVICE (PHP-FPM)
-  # ===============================
+  # --------------------
+  # ASSIGNMENTS SERVICE
+  # --------------------
   assignments-service:
-    build: ./assignments-service
-    container_name: assignments-php
+    image: mengthongly/assignments-service:latest
+    container_name: assignments-service
     restart: always
-    expose:
-      - "9000"
+    ports:
+      - "8003:8000"
     environment:
       APP_ENV: production
-      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       APP_DEBUG: false
       DB_CONNECTION: pgsql
+      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       DB_HOST: assignments-db
       DB_PORT: 5432
       DB_DATABASE: assignments_db
@@ -116,18 +91,6 @@ services:
       DB_PASSWORD: postgres
     depends_on:
       - assignments-db
-
-  assignments-nginx:
-    image: nginx:stable
-    container_name: assignments-nginx
-    restart: always
-    ports:
-      - "8003:80"
-    volumes:
-      - ./assignments-service:/var/www
-      - ./assignments-service/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - assignments-service
 
   assignments-db:
     image: postgres:15
@@ -141,10 +104,6 @@ services:
       - "5435:5432"
     volumes:
       - assignments_data:/var/lib/postgresql/data
-
-# ===============================
-# VOLUMES
-# ===============================
 
 volumes:
   users_data:
