@@ -39,5 +39,4 @@ RUN rm -f bootstrap/cache/config.php bootstrap/cache/packages.php
 RUN curl -sS https://getcomposer.org/installer | php && php composer.phar install --no-dev
 
 
-CMD ["php-fpm", "-F"]
-
+CMD php artisan serve --host=0.0.0.0 --port=8000
