@@ -1,5 +1,44 @@
 services:
   # --------------------
+  # AUTH SERVICE
+  # --------------------
+  auth-service:
+    image: mengthongly/auth-service:latest
+    container_name: auth-service
+    restart: always
+    ports:
+      - "8001:8000"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      DB_CONNECTION: pgsql
+      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
+      DB_HOST: auth-db
+      DB_PORT: 5432
+      DB_DATABASE: auth_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: ZPhVHxD62SNSyH4zLBvXlVBGv8MtY4U7N7N3suxpMXj9AC3FASBEUYKUvuXLkVrN
+      JWT_TTL: 36000
+      SERVICE_TOKEN: e87b0fd69bf8e3f50931d1ea6ae7721b43586e589ef40e3a5b0c2f1ef0cf9726
+
+    depends_on:
+      - auth-db
+
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    restart: always
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+  # --------------------
   # USERS SERVICE
   # --------------------
   users-service:
@@ -7,8 +46,9 @@ services:
     container_name: users-service
     restart: always
     ports:
-      - "8001:8000"
+      - "8002:8000"
     environment:
+      JWT_SECRET: ZPhVHxD62SNSyH4zLBvXlVBGv8MtY4U7N7N3suxpMXj9AC3FASBEUYKUvuXLkVrN
       APP_ENV: production
       APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       APP_DEBUG: false
@@ -42,9 +82,10 @@ services:
     container_name: tasks-service
     restart: always
     ports:
-      - "8002:8000"
+      - "8003:8000"
     environment:
       APP_ENV: production
+      JWT_SECRET: ZPhVHxD62SNSyH4zLBvXlVBGv8MtY4U7N7N3suxpMXj9AC3FASBEUYKUvuXLkVrN
       APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
       APP_DEBUG: false
       DB_CONNECTION: pgsql
@@ -70,41 +111,87 @@ services:
       - tasks_data:/var/lib/postgresql/data
 
   # --------------------
-  # ASSIGNMENTS SERVICE
+  # NOTIFICATIONS SERVICE (UI/Frontend)
   # --------------------
-  assignments-service:
-    image: mengthongly/assignments-service:latest
-    container_name: assignments-service
+  notifications-service:
+    image: mengthongly/notifications-service:latest
+    container_name: notifications-service
     restart: always
     ports:
-      - "8003:8000"
+      - "8004:8000"
     environment:
       APP_ENV: production
       APP_DEBUG: false
       DB_CONNECTION: pgsql
       APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
-      DB_HOST: assignments-db
+      DB_HOST: notifications-db
       DB_PORT: 5432
-      DB_DATABASE: assignments_db
+      DB_DATABASE: notifications_db
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
+      JWT_SECRET: ZPhVHxD62SNSyH4zLBvXlVBGv8MtY4U7N7N3suxpMXj9AC3FASBEUYKUvuXLkVrN
     depends_on:
-      - assignments-db
+      - notifications-db
 
-  assignments-db:
+  notifications-db:
     image: postgres:15
-    container_name: assignments-db
+    container_name: notifications-db
     restart: always
     environment:
-      POSTGRES_DB: assignments_db
+      POSTGRES_DB: notifications_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5435:5432"
     volumes:
-      - assignments_data:/var/lib/postgresql/data
+      - notifications_data:/var/lib/postgresql/data
+
+  # --------------------
+  # TASK MANAGEMENT SYSTEM (UI/Frontend)
+  # --------------------
+  task-management-system:
+    image: mengthongly/task-management-system:latest
+    container_name: task-management-system
+    restart: always
+    ports:
+      - "8005:8000"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      DB_CONNECTION: pgsql
+      APP_KEY: base64:R1cdV7Cql0hOPb6ZWFJMA8zhe5XdYAFLfCoXo+AkJ7s=
+      DB_HOST: task-management-db
+      DB_PORT: 5432
+      DB_DATABASE: task_management_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: ZPhVHxD62SNSyH4zLBvXlVBGv8MtY4U7N7N3suxpMXj9AC3FASBEUYKUvuXLkVrN
+      # Service URLs for API calls
+      AUTH_SERVICE_URL: http://auth-service:8000
+      USERS_SERVICE_URL: http://users-service:8000
+      TASKS_SERVICE_URL: http://tasks-service:8000
+    depends_on:
+      - task-management-db
+      - auth-service
+      - users-service
+      - tasks-service
+
+  task-management-db:
+    image: postgres:15
+    container_name: task-management-db
+    restart: always
+    environment:
+      POSTGRES_DB: task_management_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"
+    volumes:
+      - task_management_data:/var/lib/postgresql/data
 
 volumes:
+  auth_data:
   users_data:
   tasks_data:
-  assignments_data:
+  notifications_data:
+  task_management_data:

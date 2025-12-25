@@ -23,3 +23,27 @@ jobs:
 
       - name: Push Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/users-service:latest
+
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~
+
+            echo "Stopping running containers..."
+            docker compose down
+
+            echo "Cleaning Docker (free-tier safe)..."
+            docker container prune -f
+            docker image prune -af
+            docker volume prune -f
+            docker network prune -f
+
+            echo "Pulling latest image..."
+            docker compose pull users-service
+
+            echo "Starting service..."
+            docker compose up -d users-service
